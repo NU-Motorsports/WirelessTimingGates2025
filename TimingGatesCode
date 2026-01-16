@@ -72,25 +72,23 @@ void TimingGates(){ //Timing Gates function
   }
 
 }
-void TimingGatesCleanup(){ //Makes sure there arent any unresolved variables
-  lcd.clear();
-  Timer_Started = false;
-  delay(500);
+void ModeChangeCleanup(){ //Makes sure there arent any unresolved variables
+  lcd.clear(); //So the LCD doesnt have incorrect information
+  Timer_Started = false; //
+  delay(500); //gives half a second for person to release the button 
 }
 
-void LapTimeCleanup(){
-  
-}
 
-void ChangeState(){
+
+void ChangeState(){//changes the state
   if (!digitalRead(modeButton)){ //If the button is pressed(pullup so button is active low
-    mode = (mode + 1) % 2;
+    mode = (mode + 1) % 2;//modulo to make mode only be either 1 or 0
   }
-  if (mode =
+  ModeChangeCleanup(); //Cleans up any changed variables and gives half a second to release the button
 }
 
-void LapTime(){
-
+void LapTime(){ //Handles the lap timer
+  if 
 {
 
 
@@ -103,7 +101,10 @@ void LapTime(){
   //   lcd.print(" Seconds");
 
   // }    
-    
+//void LapTimeCleanup(){ //Makes sure there arent any unresolved variables
+//  delay(500);//Half a second for someone to release the button after pressing
+//}
+
     // if (saved_time != 0){
     //   lcd.setCursor(0, 2);
     //   lcd.print("Prev. time: ");
