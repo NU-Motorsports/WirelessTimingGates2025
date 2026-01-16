@@ -21,7 +21,15 @@ void setup() {
 }
 
 void loop() {
-  if (digitalRead(Sensor_0) == LOW && !Timer_Started){
+  if (!digitalRead(modeButton){
+  TimingGates();
+  }
+  
+
+}
+
+void TimingGates(){
+    if (digitalRead(Sensor_0) == LOW && !Timer_Started){
     Timer_Started = true;
     StartTrigger = millis();
     lcd.clear();
@@ -29,14 +37,7 @@ void loop() {
     lcd.print("Active.");
     start_sensor = Sensor_0;
     end_sensor = Sensor_1;
-    
-    // if (saved_time != 0){
-    //   lcd.setCursor(0, 2);
-    //   lcd.print("Prev. time: ");
-    //   lcd.print(saved_time);
-    // lcd.setCursor(0, 0);
-    // // lcd.print("0 Seconds");
-    // }
+
   }
   else if(digitalRead(Sensor_1) == LOW && !Timer_Started){
     Timer_Started = true;
@@ -47,15 +48,7 @@ void loop() {
     start_sensor = Sensor_1;
     end_sensor = Sensor_0;
   }
-  // if (Timer_Started){
-  //   unsigned short now = millis();
-  //   timeBetween = now - StartTrigger;
-  //   float time_float = (float)timeBetween/1000;
-  //   lcd.setCursor(0, 0);
-  //   lcd.print(time_float);
-  //   lcd.print(" Seconds");
 
-  // }    
   if (digitalRead(end_sensor) == LOW && Timer_Started){
     Timer_Started = false;
     unsigned long now = millis();
@@ -71,3 +64,22 @@ void loop() {
   }
 
 }
+
+
+  // if (Timer_Started){
+  //   unsigned short now = millis();
+  //   timeBetween = now - StartTrigger;
+  //   float time_float = (float)timeBetween/1000;
+  //   lcd.setCursor(0, 0);
+  //   lcd.print(time_float);
+  //   lcd.print(" Seconds");
+
+  // }    
+    
+    // if (saved_time != 0){
+    //   lcd.setCursor(0, 2);
+    //   lcd.print("Prev. time: ");
+    //   lcd.print(saved_time);
+    // lcd.setCursor(0, 0);
+    // // lcd.print("0 Seconds");
+    // }
