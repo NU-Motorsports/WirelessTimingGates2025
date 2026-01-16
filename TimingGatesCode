@@ -21,29 +21,29 @@ void setup() {
 }
 
 void loop() {
-  ChangeState()
-  if (!current_Mode){
-    TimingGates();
+  ChangeState() //Checks if the state needs to be changed
+  if (!current_Mode){ //checks if its in the timing gates mode
+    TimingGates(); //Timing gates function
   }
   else {
-    LapTime();
+    LapTime(); //lap time function
   }
   
 
 }
 
-void TimingGates(){
-    if (digitalRead(Sensor_0) == LOW && !Timer_Started){
-    Timer_Started = true;
-    StartTrigger = millis();
+void TimingGates(){ //Timing Gates function 
+    if (digitalRead(Sensor_0) == LOW && !Timer_Started){ //Check if currently timing and if sensor 0 is tripped
+    Timer_Started = true; //Shows that the timing is running
+    StartTrigger = millis(); //Sets the start timer value for later calculation
     lcd.clear();
     lcd.setCursor(0, 0);
-    lcd.print("Active.");
+    lcd.print("Active."); //Clears and writes to the LCD that it is currently running
     start_sensor = Sensor_0;
     end_sensor = Sensor_1;
 
   }
-  else if(digitalRead(Sensor_1) == LOW && !Timer_Started){
+  else if(digitalRead(Sensor_1) == LOW && !Timer_Started){ //If not currently timing and sesnor 1 is tripped start the  timer and take needed variables. Same as above if statement
     Timer_Started = true;
     StartTrigger = millis();
     lcd.clear();
@@ -53,7 +53,7 @@ void TimingGates(){
     end_sensor = Sensor_0;
   }
 
-  if (digitalRead(end_sensor) == LOW && Timer_Started){
+  if (digitalRead(end_sensor) == LOW && Timer_Started){ //if the end sensor is tripped while the timer is running run the end function
     Timer_Started = false;
     unsigned long now = millis();
     timeBetween = now - StartTrigger;
