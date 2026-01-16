@@ -35,22 +35,14 @@ void loop() {
 }
 
 void TimingGates(){ //Timing Gates function 
-    if (digitalRead(Sensor_0) == LOW && !Timer_Started){ //Check if currently timing and if sensor 0 is tripped
-    Timer_Started = true; //Shows that the timing is running
-    StartTrigger = millis(); //Sets the start timer value for later calculation
-    lcd.clear();
-    lcd.setCursor(0, 0);
-    lcd.print("Active."); //Clears and writes to the LCD that it is currently running
+  if (digitalRead(Sensor_0) == LOW && !Timer_Started){ //Check if currently timing and if sensor 0 is tripped
+    TimerStarted()
     start_sensor = Sensor_0;
     end_sensor = Sensor_1;
 
   }
   else if(digitalRead(Sensor_1) == LOW && !Timer_Started){ //If not currently timing and sesnor 1 is tripped start the  timer and take needed variables. Same as above if statement
-    Timer_Started = true;
-    StartTrigger = millis();
-    lcd.clear();
-    lcd.setCursor(0, 0);
-    lcd.print("Active.");
+    TimerStarted()
     start_sensor = Sensor_1;
     end_sensor = Sensor_0;
   }
@@ -90,17 +82,26 @@ void ChangeState(){//changes the state
     lcd.print("Gates Ready.");
   }
   else{
-    lcd.print("Lap Time Ready.")
+    lcd.print("Lap Time Ready.");
   }
 }
 
 void LapTime(){ //Handles the lap timer
-  if 
+  if(digitalRead(Sensor_1) == LOW && !Timer_Started){
+    TimerStarted()
+  }
 {
 
+void TimerStarted() {
+    Timer_Started = true; //Shows that the timing is running
+    StartTrigger = millis(); //Sets the start timer value for later calculation
+    lcd.clear();
+    lcd.setCursor(0, 0);
+    lcd.print("Active."); //Clears and writes to the LCD that it is currently running
+}
 
-  // if (Timer_Started){
-  //   unsigned short now = millis();
+// if (Timer_Started){
+//   unsigned short now = millis();
   //   timeBetween = now - StartTrigger;
   //   float time_float = (float)timeBetween/1000;
   //   lcd.setCursor(0, 0);
