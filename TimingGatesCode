@@ -21,8 +21,12 @@ void setup() {
 }
 
 void loop() {
-  if (!digitalRead(modeButton){
+  ChangeState()
+  if (!current_Mode){
     TimingGates();
+  }
+  else {
+    LapTime();
   }
   
 
@@ -61,9 +65,24 @@ void TimingGates(){
     lcd.print(saved_time);
     lcd.print(" Seconds");
     delay(500);
+    lcd.setCursor(0, 0);
+    lcd.print("Ready.");
   }
 
 }
+void TimingGatesCleanup(){
+  lcd.clear()
+  Timer_Started = false;
+  delay(500);
+}
+
+void ChangeState(){
+  if
+}
+
+void LapTime(){
+
+{
 
 
   // if (Timer_Started){
