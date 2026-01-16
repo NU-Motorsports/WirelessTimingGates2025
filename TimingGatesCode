@@ -84,7 +84,14 @@ void ChangeState(){//changes the state
   if (!digitalRead(modeButton)){ //If the button is pressed(pullup so button is active low
     mode = (mode + 1) % 2;//modulo to make mode only be either 1 or 0
   }
-  ModeChangeCleanup(); //Cleans up any changed variables and gives half a second to release the button
+  ModeChangeCleanup(); //Cleans up any changed variables and gives half a second to Srelease the button
+  lcd.setCursor(0, 0);
+  if (mode == 0){
+    lcd.print("Gates Ready.");
+  }
+  else{
+    lcd.print("Lap Time Ready.")
+  }
 }
 
 void LapTime(){ //Handles the lap timer
