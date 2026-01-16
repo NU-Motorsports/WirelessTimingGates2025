@@ -22,7 +22,7 @@ void setup() {
 
 void loop() {
   if (!digitalRead(modeButton){
-  TimingGates();
+    TimingGates();
   }
   
 
