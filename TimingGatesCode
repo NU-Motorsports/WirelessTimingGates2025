@@ -1,21 +1,20 @@
 #include <LiquidCrystal.h>
-int Sensor_0 = 3;
-int Sensor_1 = 4;
-int start_sensor;
-int end_sensor;
-unsigned long StartTrigger = 0;
-unsigned long timeBetween = 0;
-bool Timer_Started = false;
-const int rs = 13, en = 12, d4 = 11, d5 = 10, d6 = 9, d7 = 8;
-LiquidCrystal lcd(rs, en, d4, d5, d6, d7);
-float saved_time = 0;
+int Sensor_0 = 3; //Sensor Location  
+int Sensor_1 = 4; //Sensor Location  
+int start_sensor; // Used to track which sesnor started 
+int end_sensor; //Used to track which sensor must end
+unsigned long StartTrigger = 0; //Start time
+unsigned long timeBetween = 0; //Time between triggers(output time)
+bool Timer_Started = false; //checks whether the timer is running
+const int rs = 13, en = 12, d4 = 11, d5 = 10, d6 = 9, d7 = 8; //Ripped code from online for the LCD initialization so I got no clue. (Fuck reading documentation)
+LiquidCrystal lcd(rs, en, d4, d5, d6, d7);//initializes the LCD screen as an object with the correct pin assignments.
+float saved_time = 0; //previously logged time
 
 void setup() {
   Serial.begin(9600);
   pinMode(Sensor_1, INPUT_PULLUP);
   pinMode(Sensor_0, INPUT_PULLUP);
   lcd.begin(16, 2);
-  // Serial.print(digitalRead(Start_Sensor));
 }
 
 void loop() {
