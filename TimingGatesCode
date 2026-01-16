@@ -1,0 +1,71 @@
+#include <LiquidCrystal.h>
+int Sensor_0 = 3;
+int Sensor_1 = 4;
+int start_sensor;
+int end_sensor;
+unsigned long StartTrigger = 0;
+unsigned long timeBetween = 0;
+bool Timer_Started = false;
+const int rs = 13, en = 12, d4 = 11, d5 = 10, d6 = 9, d7 = 8;
+LiquidCrystal lcd(rs, en, d4, d5, d6, d7);
+float saved_time = 0;
+
+void setup() {
+  Serial.begin(9600);
+  pinMode(Sensor_1, INPUT_PULLUP);
+  pinMode(Sensor_0, INPUT_PULLUP);
+  lcd.begin(16, 2);
+  // Serial.print(digitalRead(Start_Sensor));
+}
+
+void loop() {
+  if (digitalRead(Sensor_0) == LOW && !Timer_Started){
+    Timer_Started = true;
+    StartTrigger = millis();
+    lcd.clear();
+    lcd.setCursor(0, 0);
+    lcd.print("Active.");
+    start_sensor = Sensor_0;
+    end_sensor = Sensor_1;
+    
+    // if (saved_time != 0){
+    //   lcd.setCursor(0, 2);
+    //   lcd.print("Prev. time: ");
+    //   lcd.print(saved_time);
+    // lcd.setCursor(0, 0);
+    // // lcd.print("0 Seconds");
+    // }
+  }
+  else if(digitalRead(Sensor_1) == LOW && !Timer_Started){
+    Timer_Started = true;
+    StartTrigger = millis();
+    lcd.clear();
+    lcd.setCursor(0, 0);
+    lcd.print("Active.");
+    start_sensor = Sensor_1;
+    end_sensor = Sensor_0;
+  }
+  // if (Timer_Started){
+  //   unsigned short now = millis();
+  //   timeBetween = now - StartTrigger;
+  //   float time_float = (float)timeBetween/1000;
+  //   lcd.setCursor(0, 0);
+  //   lcd.print(time_float);
+  //   lcd.print(" Seconds");
+
+  // }    
+  if (digitalRead(end_sensor) == LOW && Timer_Started){
+    Timer_Started = false;
+    unsigned long now = millis();
+    timeBetween = now - StartTrigger;
+    lcd.clear();
+    lcd.setCursor(0, 0);
+    lcd.print("Not Active.");
+    lcd.setCursor(0, 1);
+    saved_time = (float)timeBetween/1000;
+    lcd.print(saved_time);
+    lcd.print(" Seconds");
+    delay(500);
+  }
+
+}
