@@ -79,8 +79,8 @@ void ChangeState(){//changes the state
 
 void LapTime(){ //Handles the lap timer
   if(digitalRead(Sensor_1) == LOW && !Timer_Started){
-    TimerStarted()
-    delay(1000)
+    TimerStarted();
+    delay(1000);
   }
   if(digitalRead(Sensor_1) == LOW && !Timer_Started){
     TimerEnded();
