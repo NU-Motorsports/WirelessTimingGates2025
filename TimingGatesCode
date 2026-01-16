@@ -18,6 +18,8 @@ void setup() {
   pinMode(Sensor_0, INPUT_PULLUP);
   lcd.begin(16, 2); //starts the LCD screen as a 16 by 2 display(16 characters wide 2 high)
   pinMode(modeButton, INPUT_PULLUP);
+  lcd.setCursor(0, 0);
+  lcd.print("Gates Ready.");
 }
 
 void loop() {
@@ -66,18 +68,25 @@ void TimingGates(){ //Timing Gates function
     lcd.print(" Seconds");
     delay(500);
     lcd.setCursor(0, 0);
-    lcd.print("Ready.");
+    lcd.print("Gates Ready.");
   }
 
 }
-void TimingGatesCleanup(){
-  lcd.clear()
+void TimingGatesCleanup(){ //Makes sure there arent any unresolved variables
+  lcd.clear();
   Timer_Started = false;
   delay(500);
 }
 
+void LapTimeCleanup(){
+  
+}
+
 void ChangeState(){
-  if
+  if (!digitalRead(modeButton)){ //If the button is pressed(pullup so button is active low
+    mode = (mode + 1) % 2;
+  }
+  if (mode =
 }
 
 void LapTime(){
