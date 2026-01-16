@@ -36,28 +36,19 @@ void loop() {
 
 void TimingGates(){ //Timing Gates function 
   if (digitalRead(Sensor_0) == LOW && !Timer_Started){ //Check if currently timing and if sensor 0 is tripped
-    TimerStarted()
+    TimerStarted();
     start_sensor = Sensor_0;
     end_sensor = Sensor_1;
 
   }
   else if(digitalRead(Sensor_1) == LOW && !Timer_Started){ //If not currently timing and sesnor 1 is tripped start the  timer and take needed variables. Same as above if statement
-    TimerStarted()
+    TimerStarted();
     start_sensor = Sensor_1;
     end_sensor = Sensor_0;
   }
 
   if (digitalRead(end_sensor) == LOW && Timer_Started){ //if the end sensor is tripped while the timer is running run the end function
-    Timer_Started = false;
-    unsigned long now = millis();
-    timeBetween = now - StartTrigger;
-    lcd.clear();
-    lcd.setCursor(0, 0);
-    lcd.print("Not Active.");
-    lcd.setCursor(0, 1);
-    saved_time = (float)timeBetween/1000;
-    lcd.print(saved_time);
-    lcd.print(" Seconds");
+    TimerEnded();
     delay(500);
     lcd.setCursor(0, 0);
     lcd.print("Gates Ready.");
@@ -89,10 +80,14 @@ void ChangeState(){//changes the state
 void LapTime(){ //Handles the lap timer
   if(digitalRead(Sensor_1) == LOW && !Timer_Started){
     TimerStarted()
+    delay(1000)
   }
-{
-
-void TimerStarted() {
+  if(digitalRead(Sensor_1) == LOW && !Timer_Started){
+    TimerEnded();
+    TimerStarted();
+  }
+}
+void TimerStarted() {//For when the timer is started
     Timer_Started = true; //Shows that the timing is running
     StartTrigger = millis(); //Sets the start timer value for later calculation
     lcd.clear();
@@ -100,6 +95,18 @@ void TimerStarted() {
     lcd.print("Active."); //Clears and writes to the LCD that it is currently running
 }
 
+void TimerEnded() { //Runs when the timer ends
+    Timer_Started = false;
+    unsigned long now = millis();
+    timeBetween = now - StartTrigger;
+    lcd.clear();
+    lcd.setCursor(0, 0);
+    lcd.print("Not Active.");
+    lcd.setCursor(0, 1);
+    saved_time = (float)timeBetween/1000;
+    lcd.print(saved_time);
+    lcd.print(" Seconds");
+}
 // if (Timer_Started){
 //   unsigned short now = millis();
   //   timeBetween = now - StartTrigger;
