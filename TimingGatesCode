@@ -1,7 +1,7 @@
 #include <LiquidCrystal.h>
 int modeButton = 5;//Button Pin
-int Sensor_0 = 3; //Sensor pin  
-int Sensor_1 = 4; //Sensor pin  
+int Sensor_0 = 7; //Sensor pin  
+int Sensor_1 = 6; //Sensor pin  
 int start_sensor; // Used to track which sesnor started 
 int end_sensor; //Used to track which sensor must end
 unsigned long StartTrigger = 0; //Start time
@@ -23,7 +23,7 @@ void setup() {
 }
 
 void loop() {
-  ChangeState() //Checks if the state needs to be changed
+  ChangeState(); //Checks if the state needs to be changed
   if (!current_Mode){ //checks if its in the timing gates mode
     TimingGates(); //Timing gates function
   }
@@ -34,22 +34,23 @@ void loop() {
 
 }
 
-void TimingGates(){ //Timing Gates function 
-  if (digitalRead(Sensor_0) == LOW && !Timer_Started){ //Check if currently timing and if sensor 0 is tripped
+void TimingGates(){ //Timing Gates function
+  if (digitalRead(Sensor_0) == HIGH && !Timer_Started){ //Check if currently timing and if sensor 0 is tripped
+    
     TimerStarted();
     start_sensor = Sensor_0;
     end_sensor = Sensor_1;
 
   }
-  else if(digitalRead(Sensor_1) == LOW && !Timer_Started){ //If not currently timing and sesnor 1 is tripped start the  timer and take needed variables. Same as above if statement
+  else if(digitalRead(Sensor_1) == HIGH && !Timer_Started){ //If not currently timing and sesnor 1 is tripped start the  timer and take needed variables. Same as above if statement
     TimerStarted();
     start_sensor = Sensor_1;
     end_sensor = Sensor_0;
   }
 
-  if (digitalRead(end_sensor) == LOW && Timer_Started){ //if the end sensor is tripped while the timer is running run the end function
+  if (digitalRead(end_sensor) == HIGH && Timer_Started){ //if the end sensor is tripped while the timer is running run the end function
     TimerEnded();
-    delay(500);
+    delay(1000);
     lcd.setCursor(0, 0);
     lcd.print("Gates Ready.");
   }
@@ -58,6 +59,7 @@ void TimingGates(){ //Timing Gates function
 void ModeChangeCleanup(){ //Makes sure there arent any unresolved variables
   lcd.clear(); //So the LCD doesnt have incorrect information
   Timer_Started = false; //
+  saved_time = 0;
   delay(500); //gives half a second for person to release the button 
 }
 
@@ -65,37 +67,46 @@ void ModeChangeCleanup(){ //Makes sure there arent any unresolved variables
 
 void ChangeState(){//changes the state
   if (!digitalRead(modeButton)){ //If the button is pressed(pullup so button is active low
-    mode = (mode + 1) % 2;//modulo to make mode only be either 1 or 0
-  }
-  ModeChangeCleanup(); //Cleans up any changed variables and gives half a second to Srelease the button
-  lcd.setCursor(0, 0);
-  if (mode == 0){
-    lcd.print("Gates Ready.");
-  }
-  else{
-    lcd.print("Lap Time Ready.");
+    current_Mode = (current_Mode + 1) % 2;//modulo to make mode only be either 1 or 0
+    lcd.setCursor(0, 0);
+    ModeChangeCleanup(); //Cleans up any changed variables and gives half a second to Srelease the button
+    if (current_Mode == 0){
+      lcd.print("Gates Ready.");
+      Serial.print("Gates Ready.");
+    }
+    else{
+      lcd.print("Lap Time Ready.");
+      Serial.print("Lap Time Ready.");
+    }
   }
 }
 
-void LapTime(){ //Handles the lap timer
-  if(digitalRead(Sensor_1) == LOW && !Timer_Started){
+void LapTime(){ //Handles the lap timer 
+  if(digitalRead(Sensor_1) == HIGH && !Timer_Started){
     TimerStarted();
     delay(1000);
   }
-  if(digitalRead(Sensor_1) == LOW && !Timer_Started){
+  if(digitalRead(Sensor_1) == HIGH && Timer_Started){
     TimerEnded();
     TimerStarted();
+    delay(1000);
   }
 }
 void TimerStarted() {//For when the timer is started
+    Serial.print("Timer started as a ");
+    Serial.print(current_Mode);
     Timer_Started = true; //Shows that the timing is running
     StartTrigger = millis(); //Sets the start timer value for later calculation
     lcd.clear();
     lcd.setCursor(0, 0);
     lcd.print("Active."); //Clears and writes to the LCD that it is currently running
+    lcd.setCursor(0, 1);
+    lcd.print(saved_time);
+    lcd.print(" Seconds");
 }
 
 void TimerEnded() { //Runs when the timer ends
+    Serial.print("Timer Ended with a time of:");
     Timer_Started = false;
     unsigned long now = millis();
     timeBetween = now - StartTrigger;
@@ -106,6 +117,7 @@ void TimerEnded() { //Runs when the timer ends
     saved_time = (float)timeBetween/1000;
     lcd.print(saved_time);
     lcd.print(" Seconds");
+    Serial.print(saved_time);
 }
 // if (Timer_Started){
 //   unsigned short now = millis();
