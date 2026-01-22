@@ -12,6 +12,8 @@ LiquidCrystal lcd(rs, en, d4, d5, d6, d7);//initializes the LCD screen as an obj
 float saved_time = 0; //previously logged time
 int current_Mode = 0; //There will be two modes: 0 is timing gates, 1 will be the Lap timer
 
+
+//sets pins for sensors and button, and sets LCD to say the timing gats are ready
 void setup() {
   Serial.begin(9600);
   pinMode(Sensor_1, INPUT_PULLUP);
@@ -22,33 +24,38 @@ void setup() {
   lcd.print("Gates Ready.");
 }
 
+
+//The main loop checks if the state is changed and then runs the code for either one depending on the state.
 void loop() {
-  ChangeState(); //Checks if the state needs to be changed
-  if (!current_Mode){ //checks if its in the timing gates mode
-    TimingGates(); //Timing gates function
+  ChangeState();
+  if (!current_Mode){ 
+    TimingGates(); 
   }
   else {
-    LapTime(); //lap time function
+    LapTime();
   }
   
 
 }
 
-void TimingGates(){ //Timing Gates function
-  if (digitalRead(Sensor_0) == HIGH && !Timer_Started){ //Check if currently timing and if sensor 0 is tripped
+//timing gate function. Essentially checks if a gate was tripped. If it was then wait for the other to trip and then run the end function
+void TimingGates(){
+
+//Checks if else checks which sensor is trippeed and logs that to know which on to wait for
+  if (digitalRead(Sensor_0) == HIGH && !Timer_Started){ 
     
     TimerStarted();
     start_sensor = Sensor_0;
     end_sensor = Sensor_1;
 
   }
-  else if(digitalRead(Sensor_1) == HIGH && !Timer_Started){ //If not currently timing and sesnor 1 is tripped start the  timer and take needed variables. Same as above if statement
+  else if(digitalRead(Sensor_1) == HIGH && !Timer_Started){ 
     TimerStarted();
     start_sensor = Sensor_1;
     end_sensor = Sensor_0;
   }
-
-  if (digitalRead(end_sensor) == HIGH && Timer_Started){ //if the end sensor is tripped while the timer is running run the end function
+//once the other is tripped end the timer and print onto the LCD screen
+  if (digitalRead(end_sensor) == HIGH && Timer_Started){
     TimerEnded();
     delay(1000);
     lcd.setCursor(0, 0);
@@ -56,20 +63,27 @@ void TimingGates(){ //Timing Gates function
   }
 
 }
-void ModeChangeCleanup(){ //Makes sure there arent any unresolved variables
-  lcd.clear(); //So the LCD doesnt have incorrect information
-  Timer_Started = false; //
+
+//Cleans up between the changing of modes. Removes the variables that are stored and clears the LCD screen. AS well gives a 1 second delay for hold time
+void ModeChangeCleanup(){
+  lcd.clear();
+  Timer_Started = false;
   saved_time = 0;
-  delay(500); //gives half a second for person to release the button 
+  delay(1000); 
 }
 
 
+//Changes the state using a modulo to switch between 1 and 0 when the button is pressed
+void ChangeState(){
 
-void ChangeState(){//changes the state
-  if (!digitalRead(modeButton)){ //If the button is pressed(pullup so button is active low
-    current_Mode = (current_Mode + 1) % 2;//modulo to make mode only be either 1 or 0
+  if (!digitalRead(modeButton)){
+    current_Mode = (current_Mode + 1) % 2;
     lcd.setCursor(0, 0);
-    ModeChangeCleanup(); //Cleans up any changed variables and gives half a second to Srelease the button
+
+//Runs the cleanup function to ensure no issues changing
+    ModeChangeCleanup(); 
+
+//sets up screen for the running function
     if (current_Mode == 0){
       lcd.print("Gates Ready.");
       Serial.print("Gates Ready.");
@@ -81,7 +95,8 @@ void ChangeState(){//changes the state
   }
 }
 
-void LapTime(){ //Handles the lap timer 
+//laptime function essentially the gate time function however only triggers off of one sensor and restarts immediatly after being triggered
+void LapTime(){ 
   if(digitalRead(Sensor_1) == HIGH && !Timer_Started){
     TimerStarted();
     delay(1000);
