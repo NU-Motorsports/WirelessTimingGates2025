@@ -1,6 +1,6 @@
 # Wireless Timing Gates By Theodore Lourie
 
-IDE: Arduino IDE
+Arduino IDE
  
 Libraries: LiquidCrystal: https://github.com/arduino-libraries/LiquidCrystal
 
